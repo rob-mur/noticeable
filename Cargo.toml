@@ -3,6 +3,8 @@ name = "noticeable"
 version = "0.1.0"
 edition = "2021"
 readme = "README.md"
+description = "A library for lazy observables"
+license="GNU GPLv3"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
