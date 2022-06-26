@@ -1,5 +1,4 @@
 use std::marker::Send;
-
 pub(crate) struct Callback<'a, E> {
     inner: Box<dyn FnMut(&E) + Send + 'a>,
 }
