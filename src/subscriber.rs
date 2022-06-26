@@ -1,19 +1,18 @@
 use crate::callback::Callback;
-use std::cell::RefCell;
-use std::rc::{Rc, Weak};
+use std::sync::{Arc, Mutex, Weak};
 
 pub struct Subscriber<'a, E> {
-    callback: Rc<RefCell<Callback<'a, E>>>,
+    callback: Arc<Mutex<Callback<'a, E>>>,
 }
 
 impl<'a, E> Subscriber<'a, E> {
-    pub fn new(callback: impl FnMut(&E) + 'a) -> Self {
+    pub fn new(callback: impl FnMut(&E) + Send + 'a) -> Self {
         Self {
-            callback: Rc::new(RefCell::new(Callback::new(callback))),
+            callback: Arc::new(Mutex::new(Callback::new(callback))),
         }
     }
 
-    pub(crate) fn callback(&self) -> Weak<RefCell<Callback<'a, E>>> {
-        Rc::downgrade(&self.callback)
+    pub(crate) fn callback(&self) -> Weak<Mutex<Callback<'a, E>>> {
+        Arc::downgrade(&self.callback)
     }
 }

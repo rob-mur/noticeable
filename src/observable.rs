@@ -1,10 +1,9 @@
 use crate::callback::Callback;
 use crate::subscriber::Subscriber;
-use std::cell::RefCell;
-use std::rc::Weak;
+use std::sync::{Mutex, Weak};
 
 pub struct Observable<'a, E> {
-    subscribers: Vec<Weak<RefCell<Callback<'a, E>>>>,
+    subscribers: Vec<Weak<Mutex<Callback<'a, E>>>>,
 }
 
 impl<'a, E> Observable<'a, E> {
@@ -21,7 +20,7 @@ impl<'a, E> Observable<'a, E> {
     pub fn notify(&mut self, event: E) {
         self.subscribers.retain(|x| x.upgrade().is_some());
         for subscriber in self.subscribers.iter_mut() {
-            subscriber.upgrade().unwrap().borrow_mut().call(&event);
+            subscriber.upgrade().unwrap().lock().unwrap().call(&event);
         }
     }
 }

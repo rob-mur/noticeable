@@ -1,5 +1,6 @@
 use crate::observable::Observable;
 use crate::subscriber::Subscriber;
+use std::sync::{Arc, Mutex};
 
 #[test]
 fn can_create() {
@@ -51,7 +52,6 @@ fn is_not_notified_twice() {
 
 #[test]
 fn drop_check_implemented() {
-    //Arrange
     let mut observable: Observable<()> = Observable::new();
     let mut some_data = false;
     {
@@ -60,4 +60,21 @@ fn drop_check_implemented() {
         observable.notify(());
     }
     assert!(some_data);
+}
+
+#[test]
+fn can_send_between_threads() {
+    let mut observable: Observable<()> = Observable::new();
+    let some_data = Arc::new(Mutex::new(false));
+    let subscriber = Subscriber::new(|()| {
+        let mut data = some_data.lock().unwrap();
+        *data = true;
+    });
+    observable.subscribe(&subscriber);
+    std::thread::scope(|s| {
+        s.spawn(|| {
+            observable.notify(());
+        });
+    });
+    assert!(*some_data.lock().unwrap());
 }

@@ -1,3 +1,5 @@
+#![feature(scoped_threads)]
+
 mod callback;
 mod observable;
 mod subscriber;
