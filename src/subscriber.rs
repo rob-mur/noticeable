@@ -13,7 +13,7 @@ impl<'a, E> Subscriber<'a, E> {
         }
     }
 
-    pub fn callback(&self) -> Weak<RefCell<Callback<'a, E>>> {
+    pub(crate) fn callback(&self) -> Weak<RefCell<Callback<'a, E>>> {
         Rc::downgrade(&self.callback)
     }
 }

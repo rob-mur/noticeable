@@ -48,3 +48,16 @@ fn is_not_notified_twice() {
     assert_eq!(1, outer_notification);
     assert_eq!(0, inner_notification);
 }
+
+#[test]
+fn drop_check_implemented() {
+    //Arrange
+    let mut observable: Observable<()> = Observable::new();
+    let mut some_data = false;
+    {
+        let subscriber = Subscriber::new(|()| some_data = true);
+        observable.subscribe(&subscriber);
+        observable.notify(());
+    }
+    assert!(some_data);
+}

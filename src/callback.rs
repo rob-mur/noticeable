@@ -1,7 +1,4 @@
-use std::cell::RefCell;
-use std::rc::Rc;
-
-pub struct Callback<'a, E> {
+pub(crate) struct Callback<'a, E> {
     inner: Box<dyn FnMut(&E) + 'a>,
 }
 

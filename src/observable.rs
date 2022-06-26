@@ -1,8 +1,7 @@
 use crate::callback::Callback;
 use crate::subscriber::Subscriber;
 use std::cell::RefCell;
-use std::marker::PhantomData;
-use std::rc::{Rc, Weak};
+use std::rc::Weak;
 
 pub struct Observable<'a, E> {
     subscribers: Vec<Weak<RefCell<Callback<'a, E>>>>,
