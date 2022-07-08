@@ -1,13 +1,14 @@
 use crate::callback::Callback;
 use crate::subscriber::Subscriber;
+use rayon::prelude::*;
 use std::sync::{Mutex, Weak};
 
 /// A struct that emits events of type E.
-pub struct Observable<'a, E> {
+pub struct Observable<'a, E : Sync> {
     subscribers: Vec<Weak<Mutex<Callback<'a, E>>>>,
 }
 
-impl<'a, E> Observable<'a, E> {
+impl<'a, E : Sync> Observable<'a, E> {
     /// Creates a new Observable with no Subscribers.
     pub fn new() -> Self {
         Self {
@@ -25,8 +26,8 @@ impl<'a, E> Observable<'a, E> {
     /// Notify all active subscribers of the new event.
     pub fn notify(&mut self, event: E) {
         self.subscribers.retain(|x| x.upgrade().is_some());
-        for subscriber in self.subscribers.iter_mut() {
+        self.subscribers.par_iter_mut().for_each(|subscriber| {
             subscriber.upgrade().unwrap().lock().unwrap().call(&event);
-        }
+        });
     }
 }
