@@ -10,3 +10,6 @@ repository="https://github.com/rob-mur/noticeable/"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+
+[dev-dependencies]
+crossbeam = "0.8.1"

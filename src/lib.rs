@@ -1,6 +1,4 @@
 //! A crate for implementing the Observer pattern i.e. sending events from Observables to Subscribers.
-
-#![feature(scoped_threads)]
 #![deny(missing_docs)]
 
 mod callback;

@@ -1,4 +1,5 @@
 use crate::observable::Observable;
+use crossbeam::thread;
 use std::sync::{Arc, Mutex};
 
 #[test]
@@ -53,10 +54,10 @@ fn can_send_between_threads() {
         let mut data = some_data.lock().unwrap();
         *data = true;
     });
-    std::thread::scope(|s| {
-        s.spawn(|| {
+    thread::scope(|s| {
+        s.spawn(|_| {
             observable.notify(());
-        });
-    });
+        }).join().unwrap();
+    }).unwrap();
     assert!(*some_data.lock().unwrap());
 }
